@@ -136,3 +136,18 @@ jobs:
       with:
         name: universal-apk
         path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/*/release/*universal*.apk
+
+    - name: Publish APK to Releases
+      if: ${{ success() }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        mkdir -p out
+        cp V2rayNG/app/build/outputs/apk/*/release/*armeabi-v7a*.apk out/GI-ko-ko-vpn-armeabi-v7a.apk
+        (cd out && sha256sum GI-ko-ko-vpn-armeabi-v7a.apk > SHA256SUMS.txt)
+        gh release create "build-${{ github.run_number }}" out/* \
+          --repo ${{ github.repository }} \
+          --target ${{ github.sha }} \
+          --title "G.I ko ko vpn build ${{ github.run_number }}" \
+          --notes "armeabi-v7a APK (Redmi 9A and other 32-bit phones)" \
+          --latest
