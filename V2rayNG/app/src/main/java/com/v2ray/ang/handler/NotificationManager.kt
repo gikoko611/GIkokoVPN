@@ -266,6 +266,10 @@ object NotificationManager {
         val proxyTotal = proxyUplink + proxyDownlink
         val directTotal = directUplink + directDownlink
         val zeroSpeed = proxyTotal + directTotal == 0L
+        TrafficMonitor.publish(
+            proxyUplink / sinceLastQueryInSeconds, proxyDownlink / sinceLastQueryInSeconds,
+            proxyUplink, proxyDownlink
+        )
         if (!zeroSpeed || !lastZeroSpeed) {
             val text = StringBuilder()
             appendSpeedString(
